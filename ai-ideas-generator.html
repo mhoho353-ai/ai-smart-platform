@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مولد الأفكار والعناوين الذكي للفيديوهات - منصة الذكاء الاصطناعي</title>
+    <meta name="description" content="أنشئ أفكار إبداعية وعناوين جذابة لفيديوهاتك ومحتواك على السوشيال ميديا باستخدام الذكاء الاصطناعي مجاناً.">
+    
+    <!-- بيانات السيو المهيكلة (Schema Markup) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "مولد الأفكار والعناوين الذكي",
+      "operatingSystem": "All",
+      "applicationCategory": "DeveloperApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "أداة ذكية لتوليد أفكار المحتوى وعناوين الفيديوهات."
+    }
+    </script>
+
+    <!-- تحميل Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between">
+
+    <!-- الهيدر -->
+    <header class="bg-slate-800 border-b border-slate-700 py-4 px-6 text-center">
+        <div class="max-w-2xl mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-indigo-400 text-xs font-bold hover:underline">⬅ العودة للمنصة</a>
+            <h1 class="text-xl font-bold text-indigo-400">مولد الأفكار والعناوين 💡</h1>
+            <span></span>
+        </div>
+        <p class="text-sm text-slate-400 mt-1">ابتكر أفكاراً جهنمية ومحتوى جديد لقناتك ومنصاتك</p>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="max-w-2xl mx-auto p-4 sm:p-6 w-full flex-grow space-y-6">
+        
+        <!-- إعدادات الـ API -->
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 space-y-2">
+            <label class="block text-xs font-bold text-indigo-300">مفتاح Google Gemini API Key:</label>
+            <div class="flex gap-2">
+                <input type="password" id="apiKeyInput" placeholder="أدخل مفتاح الـ API هنا..." class="w-full p-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-200 focus:outline-none">
+                <button onclick="saveApiKey()" class="bg-indigo-600 text-white font-bold px-3 py-2 rounded-xl hover:bg-indigo-500 text-xs">حفظ</button>
+            </div>
+        </div>
+
+        <!-- صندوق الأداة الرئيسي -->
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl shadow-lg p-5 sm:p-6 space-y-4">
+            
+            <div>
+                <label class="block text-sm font-semibold mb-2 text-slate-300">ما هو مجالك أو اهتمامك؟</label>
+                <input type="text" id="nicheInput" class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm text-slate-100" placeholder="مثال: التكنولوجيا، الطبخ، الربح من الإنترنت، اللياقة...">
+            </div>
+
+            <div class="flex items-end">
+                <button onclick="generateIdeas()" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-500 transition text-sm shadow-md shadow-indigo-900">
+                    توليد الأفكار والعناوين الجذابة ⚡
+                </button>
+            </div>
+
+            <div class="border-t border-slate-700 pt-4 space-y-2">
+                <div class="flex justify-between items-center">
+                    <label class="block text-sm font-semibold text-slate-300">الأفكار المقترحة:</label>
+                    <button onclick="copyOutput()" class="bg-emerald-600 text-white text-xs font-bold py-1.5 px-3 rounded-lg hover:bg-emerald-700 transition">
+                        نسخ الأفكار 📋
+                    </button>
+                </div>
+                <textarea id="outputText" rows="10" readonly class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-sm focus:outline-none text-slate-200 leading-relaxed" placeholder="ستظهر قائمة الأفكار والعناوين هنا فوراً..."></textarea>
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="bg-slate-800 border-t border-slate-700 py-4 text-center text-xs text-slate-500">
+        أفكار مبتكرة ومتجددة لرفع تفاعل محتواك الرقمي.
+    </footer>
+
+    <!-- سكريبت التوليد -->
+    <script>
+        window.onload = function() {
+            const savedKey = localStorage.getItem('gemini_api_key');
+            if (savedKey) {
+                document.getElementById('apiKeyInput').value = savedKey;
+            }
+        };
+
+        function saveApiKey() {
+            const key = document.getElementById('apiKeyInput').value.trim();
+            if (!key) {
+                alert('الرجاء إدخال مفتاح صحيح!');
+                return;
+            }
+            localStorage.setItem('gemini_api_key', key);
+            alert('تم حفظ المفتاح بنجاح!');
+        }
+
+        async function generateIdeas() {
+            const apiKey = document.getElementById('apiKeyInput').value.trim();
+            const niche = document.getElementById('nicheInput').value.trim();
+            const outputText = document.getElementById('outputText');
+
+            if (!apiKey) {
+                alert('الرجاء حفظ مفتاح الـ API أولاً!');
+                return;
+            }
+            if (!niche) {
+                alert('الرجاء إدخال المجال أو الاهتمام!');
+                return;
+            }
+
+            outputText.value = "جاري توليد أفكار إبداعية وعناوين قوية بواسطة الذكاء الاصطناعي... ⏳";
+
+            let promptText = `أعطني قائمة من 5 إلى 7 أفكار فيديوهات أو محتوى إبداعية جداً وغير تقليدية في مجال: "${niche}". مع اقتراح عنوان خطافق (Hook) وعنوان جذاب لكل فكرة لزيادة نسبة النقر والتفاعل.`;
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`;
+
+            const requestBody = {
+                contents: [{
+                    parts: [{ text: promptText }]
+                }]
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.candidates && data.candidates[0].content) {
+                    outputText.value = data.candidates[0].content.parts[0].text;
+                } else {
+                    let errorMsg = data.error ? data.error.message : 'خطأ غير معروف';
+                    outputText.value = `فشل التوليد: ${errorMsg}`;
+                }
+            } catch (error) {
+                outputText.value = `حدث خطأ في الشبكة: ${error.message}`;
+            }
+        }
+
+        function copyOutput() {
+            const outputText = document.getElementById('outputText');
+            if (!outputText.value) return;
+            navigator.clipboard.writeText(outputText.value);
+            alert('تم نسخ الأفكار بنجاح!');
+        }
+    </script>
+</body>
+</html>
