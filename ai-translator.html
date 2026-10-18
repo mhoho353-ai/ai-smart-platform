@@ -49,7 +49,7 @@
         <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 sm:p-5 space-y-3">
             <div class="flex justify-between items-center">
                 <label class="block text-sm font-bold text-indigo-300">مفتاح Google Gemini API Key:</label>
-                <button onclick="toggleHelp()" class="text-xs text-indigo-400 hover:underline">كيف أ obten مفتاح مجاني؟ 💡</button>
+                <button onclick="toggleHelp()" class="text-xs text-indigo-400 hover:underline">كيف أحصل على مفتاح مجاني؟ 💡</button>
             </div>
             
             <div class="flex gap-2">
@@ -57,14 +57,14 @@
                 <button onclick="saveApiKey()" class="bg-indigo-600 text-white font-bold px-4 py-2.5 rounded-xl hover:bg-indigo-500 text-xs transition">حفظ</button>
             </div>
 
-            <!-- دليل الحصول على المفتاح (مخفي افتراضياً ويظهر عند الضغط) -->
+            <!-- دليل الحصول على المفتاح -->
             <div id="helpBox" class="hidden bg-slate-900/80 border border-slate-700 p-3 rounded-xl text-xs text-slate-300 space-y-2 leading-relaxed">
                 <p class="font-bold text-indigo-300">خطوات بسيطة للحصول على مفتاح مجاني 100%:</p>
                 <ol class="list-decimal list-inside space-y-1 text-slate-400">
                     <li>اضغط على رابط موقع جوجل الرسمي: <a href="https://aistudio.google.com/apikey" target="_blank" class="text-indigo-400 underline">Google AI Studio</a></li>
                     <li>سجل الدخول باستخدام أي حساب جوجل عادي.</li>
                     <li>اضغط على زر <span class="text-white font-bold">Create API key</span>.</li>
-                    <li>انسخ المفتاح (يبدأ بـ <code class="bg-slate-800 px-1 text-indigo-300">AIza</code>) والصقه في الخانة بالأعلى. المفتاح مجاني بالكامل ولا يحتاج بطاقة إئتمانية!</li>
+                    <li>انسخ المفتاح (يبدأ بـ <code class="bg-slate-800 px-1 text-indigo-300">AIza</code>) والصقه في الخانة بالأعلى.</li>
                 </ol>
             </div>
         </div>
@@ -101,21 +101,19 @@
                         نسخ النتيجة 📋
                     </button>
                 </div>
-                <textarea id="outputText" rows="5" readonly class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-sm focus:outline-none text-slate-200" placeholder="ستظهر النتيجة هنا مباشرة من سيرفرات جوجل..."></textarea>
+                <textarea id="outputText" rows="5" readonly class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-sm focus:outline-none text-slate-200" placeholder="ستظهر النتيجة هنا مباشرة..."></textarea>
             </div>
 
         </div>
 
     </main>
 
-    <!-- الفوتر -->
     <footer class="bg-slate-800 border-t border-slate-700 py-4 text-center text-xs text-slate-500">
         مفتاحك محفوظ محلياً في متصفحك فقط لأمان تام.
     </footer>
 
-    <!-- سكريبت الربط الحقيقي بالـ API -->
+    <!-- سكريبت الربط المحدث بأحدث نموذج -->
     <script>
-        // استرجاع المفتاح المحفوظ مسبقاً إن وجد
         window.onload = function() {
             const savedKey = localStorage.getItem('gemini_api_key');
             if (savedKey) {
@@ -145,7 +143,7 @@
             const outputText = document.getElementById('outputText');
 
             if (!apiKey) {
-                alert('الرجاء إدخال حفظ مفتاح الـ API أولاً في الخانة بالأعلى!');
+                alert('الرجاء حفظ مفتاح الـ API أولاً في الخانة بالأعلى!');
                 return;
             }
             if (!text) {
@@ -155,20 +153,19 @@
 
             outputText.value = "جاري الاتصال بنموذج الذكاء الاصطناعي وانتظار الرد... ⏳";
 
-            // تحديد التعليمات بناءً على اختيار المستخدم
             let promptText = "";
             if (action === 'refine') {
-                promptText = `قم بإعادة صياغة وتصحيح النص التالي بأسلوب عربى بليغ واحترافي، وأعطني النتيجة مباشرة بدون مقدمات: \n\n ${text}`;
+                promptText = `قم بإعادة صياغة وتصحيح النص التالي بأسلوب عربي بليغ واحترافي، وأعطني النتيجة مباشرة بدون مقدمات: \n\n ${text}`;
             } else if (action === 'translate_en') {
                 promptText = `Translate the following text into professional and native English, output only the translation: \n\n ${text}`;
             } else if (action === 'translate_ar') {
                 promptText = `ترجم النص التالي إلى اللغة العربية الفصحى بدقة واحترافية عالية، وأعطني النتيجة مباشرة: \n\n ${text}`;
             } else if (action === 'marketing') {
-                promptText = `حول النص التالي إلى صيغة إعلانية تسويقية جذابة ومحفزة للشراء أو التفاعل مع استخدام رموز تعبيرية مناسبة: \n\n ${text}`;
+                promptText = `حول النص التالي إلى صيغة إعلانية تسويقية جذابة ومحفزة للتفاعل مع استخدام رموز تعبيرية مناسبة: \n\n ${text}`;
             }
 
-            // رابط الـ API الخاص بـ Google Gemini (استخدام نموذج gemini-1.5-flash أو gemini-2.5-flash السريع والمجاني)
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+            // تم تحديث اسم النموذج هنا إلى gemini-3.8-flash المحدث
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`;
 
             const requestBody = {
                 contents: [{
